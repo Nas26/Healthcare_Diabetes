@@ -19,9 +19,15 @@ Import Dataset
 ```{r}
 data = read.csv("Healthcare-Diabetes.csv")
 str(data)
-head(data, 10)
+
+
 
 ```
+check the top 15 row
+```{r}
+head(data, 15)
+```
+
 Check Column Names
 ```{r}
 colnames(data)
@@ -130,11 +136,10 @@ summary(new_data[, c("Age", "Glucose", "BMI", "BP")])
 ```
 Statistical Measures
 ```{r}
-mean_val = mean(new_data$Glucose, na.rm = TRUE)
-median_val = median(new_data$Glucose, na.rm = TRUE)
-
-
-mean_val; median_val
+mean_val = mean(new_data$Glucose, na.rm = TRUE)median_val = median(new_data$Glucose, na.rm = TRUE)
+mode_age = as.numeric(names(sort(table(new_data$Age), decreasing = TRUE)[1]))
+range_age = max(new_data$Age, na.rm = TRUE) - min(new_data$Age, na.rm = TRUE)
+mean_val; median_val; mode_age;range_age
 
 ```
 
