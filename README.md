@@ -1,4 +1,4 @@
-#🩺 Diabetes Data Analysis
+# 🩺 Diabetes Data Analysis
 ##Overview
 This project analyzes a healthcare dataset related to diabetes using R and R Markdown. The analysis focuses on understanding patterns among patients, including relationships between key health indicators such as Glucose, BMI, and Age, as well as the likelihood of diabetes occurrence.
 
