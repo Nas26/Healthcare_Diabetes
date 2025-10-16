@@ -1,0 +1,203 @@
+---
+title: "Assignment 1"
+output: html_document
+Autor: Group 3
+---
+Introduction
+
+This report analyzes the Healthcare Diabetes dataset, focusing on patient health indicators such as glucose levels, BMI, and age. The objective is to clean, reshape, and analyze the data to uncover basic insights, compute summary statistics, and visualize relationships between variables.
+```{r}
+knitr::opts_chunk$set(
+echo = TRUE,
+message = FALSE,
+warning = FALSE,
+results = 'hold'
+)
+```
+Import Dataset
+
+```{r}
+data = read.csv("Healthcare-Diabetes.csv")
+str(data)
+head(data, 10)
+
+```
+Check Column Names
+```{r}
+colnames(data)
+
+```
+User-Defined Functions (Mean of Variables)
+##We define simple functions to calculate mean values for key variables.
+```{r}
+ave_BMI = function(data) mean(data$BMI, na.rm = TRUE)
+ave_BMI(data)
+
+ave_age = function(data) mean(data$Age, na.rm = TRUE)
+ave_age(data)
+
+ave_glucose = function(data) mean(data$Glucose, na.rm = TRUE)
+ave_glucose(data)
+
+```
+Filter Dataset
+```{r}
+library(dplyr)
+
+# Patients over 25
+
+filter_data <- filter(data, Age > 25)
+head(filter_data, 10)
+
+# Patients with diabetes and age over 65
+
+high_bmi_diabetic <- data %>%
+filter(Outcome == 1, Age > 65)
+head(high_bmi_diabetic, 10)
+
+```
+Dependent & Independent Variables
+```{r}
+independent_var = data[, c("Pregnancies", "Glucose", "BloodPressure",
+"SkinThickness", "Insulin", "BMI",
+"DiabetesPedigreeFunction", "Age")]
+dependent_var = data[, "Outcome"]
+
+# Combine and convert to data frame
+
+new_data = as.data.frame(cbind(independent_var, Outcome = dependent_var))
+head(new_data, 10)
+
+
+```
+Remove Missing Values
+```{r}
+new_data <- na.omit(new_data)
+
+```
+Identify and Remove Duplicates
+```{r}
+distinct_data = new_data %>% distinct()
+head(distinct_data, 10)
+
+
+```
+Reorder Rows in Descending Order
+```{r}
+reordered_data = new_data %>%
+arrange(across(everything(), ~desc(.)))
+head(reordered_data, 10)
+```
+Rename Columns
+```{r}
+colnames(new_data)[colnames(new_data) == "DiabetesPedigreeFunction"] = "DP_Function"
+colnames(new_data)[colnames(new_data) == "SkinThickness"] = "Skin_Thick"
+colnames(new_data)[colnames(new_data) == "BloodPressure"] = "BP"
+colnames(new_data)
+
+
+```
+Add New Variable
+```{r}
+new_data <- new_data %>%
+mutate(Glucose_Double = Glucose * 2)
+head(new_data, 10)
+
+```
+Create a Training Set
+```{r}
+library(dplyr)
+set.seed(123)
+
+# Number of rows
+n = nrow(new_data)
+
+# Randomly select 70% of the data for training
+train_indices = sample(1:n, size = 0.7 * n)
+
+# Create training and testing sets
+training_set = new_data[train_indices, ]
+testing_set  = new_data[-train_indices, ]
+
+# Check sizes
+nrow(training_set)
+nrow(testing_set)
+```
+Summary Statistics
+
+```{r}
+summary(new_data[, c("Age", "Glucose", "BMI", "BP")])
+```
+Statistical Measures
+```{r}
+mean_val = mean(new_data$Glucose, na.rm = TRUE)
+median_val = median(new_data$Glucose, na.rm = TRUE)
+
+
+mean_val; median_val
+
+```
+
+Scatter Plot with ggplot2
+```{r}
+library(ggplot2)
+
+ggplot(new_data, aes(x = Glucose, y = Age)) +
+geom_point(size = 2, color = "violet") +
+labs(
+title = "Age vs Glucose",
+x = "Glucose",
+y = "Age"
+) +
+theme_bw()
+
+```
+
+Pearson Correlation
+
+```{r}
+cor_val <- cor(new_data$Glucose, new_data$Age, use = "complete.obs", method = "pearson")
+
+ggplot(new_data, aes(x = Glucose, y = Age)) +
+geom_point(color = "steelblue") +
+labs(
+title = paste("Glucose vs Age (Pearson r =", round(cor_val, 2), ")"),
+x = "Glucose",
+y = "Age"
+) +
+theme_minimal()
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
