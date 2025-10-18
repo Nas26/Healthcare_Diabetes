@@ -1,8 +1,17 @@
 ---
 title: "Assignment 1"
-output: html_document
+output: pdf_document
 Autor: Group 3
 ---
+Group 3
+
+Names: Nastaran Rakhshan Navazkar
+Anas Al-Sammarraie
+Oyindenyefah Anastasia Osagie
+Sophia Jamil Ahmed Chaudhary
+Dharti Patel
+Maureen Uzoewulu
+
 Introduction
 
 This report analyzes the Healthcare Diabetes dataset, focusing on patient health indicators such as glucose levels, BMI, and age. The objective is to clean, reshape, and analyze the data to uncover basic insights, compute summary statistics, and visualize relationships between variables.
@@ -15,35 +24,26 @@ results = 'hold'
 )
 ```
 Import Dataset
-
+print the structure of data
 ```{r}
 data = read.csv("Healthcare-Diabetes.csv")
 str(data)
 
-
-
 ```
-check the top 15 row
+Printing 15 first rows of data
 ```{r}
 head(data, 15)
 ```
-
 Check Column Names
 ```{r}
 colnames(data)
 
 ```
 User-Defined Functions (Mean of Variables)
-##We define simple functions to calculate mean values for key variables.
+## We define simple functions to calculate mean values for key variables.
 ```{r}
-ave_BMI = function(data) mean(data$BMI, na.rm = TRUE)
-ave_BMI(data)
-
 ave_age = function(data) mean(data$Age, na.rm = TRUE)
 ave_age(data)
-
-ave_glucose = function(data) mean(data$Glucose, na.rm = TRUE)
-ave_glucose(data)
 
 ```
 Filter Dataset
@@ -52,12 +52,12 @@ library(dplyr)
 
 # Patients over 25
 
-filter_data <- filter(data, Age > 25)
+filter_data = filter(data, Age > 25)
 head(filter_data, 10)
 
 # Patients with diabetes and age over 65
 
-high_bmi_diabetic <- data %>%
+high_bmi_diabetic = data %>%
 filter(Outcome == 1, Age > 65)
 head(high_bmi_diabetic, 10)
 
@@ -78,7 +78,7 @@ head(new_data, 10)
 ```
 Remove Missing Values
 ```{r}
-new_data <- na.omit(new_data)
+new_data = na.omit(new_data)
 
 ```
 Identify and Remove Duplicates
@@ -105,7 +105,7 @@ colnames(new_data)
 ```
 Add New Variable
 ```{r}
-new_data <- new_data %>%
+new_data = new_data %>%
 mutate(Glucose_Double = Glucose * 2)
 head(new_data, 10)
 
@@ -136,7 +136,8 @@ summary(new_data[, c("Age", "Glucose", "BMI", "BP")])
 ```
 Statistical Measures
 ```{r}
-mean_val = mean(new_data$Glucose, na.rm = TRUE)median_val = median(new_data$Glucose, na.rm = TRUE)
+mean_val = mean(new_data$Glucose, na.rm = TRUE)
+median_val = median(new_data$Glucose, na.rm = TRUE)
 mode_age = as.numeric(names(sort(table(new_data$Age), decreasing = TRUE)[1]))
 range_age = max(new_data$Age, na.rm = TRUE) - min(new_data$Age, na.rm = TRUE)
 mean_val; median_val; mode_age;range_age
@@ -157,11 +158,30 @@ y = "Age"
 theme_bw()
 
 ```
+Bar Plot
+```{r}
+library(ggplot2)
+library(dplyr)
 
+# Calculate average age by outcome
+avg_age <- new_data %>%
+  group_by(Outcome) %>%
+  summarise(mean_age = mean(Age, na.rm = TRUE))
+
+# Bar plot
+ggplot(avg_age, aes(x = factor(Outcome), y = mean_age, fill = factor(Outcome))) +
+  geom_bar(stat = "identity") +
+  labs(
+    title = "Average Age by Diabetes Outcome",
+    x = "Outcome (0 = No Diabetes, 1 = Diabetes)",
+    y = "Average Age"
+  ) +
+  theme_minimal()
+```
 Pearson Correlation
 
 ```{r}
-cor_val <- cor(new_data$Glucose, new_data$Age, use = "complete.obs", method = "pearson")
+cor_val = cor(new_data$Glucose, new_data$Age, use = "complete.obs", method = "pearson")
 
 ggplot(new_data, aes(x = Glucose, y = Age)) +
 geom_point(color = "steelblue") +
@@ -173,6 +193,10 @@ y = "Age"
 theme_minimal()
 
 ```
+
+```markdown
+---
+GitHub Repository: https://github.com/Nas26/Healthcare_Diabetes.git)
 
 
 
